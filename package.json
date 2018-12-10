@@ -1,0 +1,16 @@
+{
+  "name": "vitasenior_ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "NODE_ENV=production node main.js",
+    "dev": "NODE_ENV=development node main.js"
+  },
+  "author": "Diogo Mendes",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "peer": "^0.2.10"
+  }
+}
