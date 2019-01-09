@@ -10,7 +10,11 @@
   "author": "Diogo Mendes",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^6.2.0",
     "express": "^4.16.3",
-    "peer": "^0.2.10"
+    "jsonwebtoken": "^8.4.0",
+    "mysql2": "^1.6.4",
+    "peer": "^0.2.10",
+    "sequelize": "^4.42.0"
   }
 }

@@ -1,4 +1,0 @@
-0 - waiting
-1 - ready
-2 - responding
-3 - on call

@@ -1,17 +1,36 @@
+require('dotenv').config();
 
-var app = require('express')();
-var server = require('http').createServer(app);
-var peerserver = require('peer').ExpressPeerServer(server, { key: "8dnMsRvmGdz3fPG8RYO8muaUfQ2Iy1lE", path: "/" });
+require('./src/models/index').sequelize.sync().then(
+  () => {
+    console.log('\x1b[32m(PLAIN) Connection established with External Services\x1b[0m.');
+    
+    var app = require('express')();
+    var server = require('http').createServer(app);
 
-// Handle peer registration
-app.use('/', peerserver);
+    let options = {
+      timeout: 5000,
+      key: "8dnMsRvmGdz3fPG8RYO8muaUfQ2Iy1lE",
+      ip_limit: 5000,
+      concurrent_limit: 5000,
+      proxied: false,
+      path: "/",
+      port: process.env.PORT || 8808,
+      debug: true,
+      allow_discovery: false
+    };
 
-// Start ws server
-let port = process.env.PORT || 8808;
-server.listen(port, () => {
-  console.log('\x1b[32m%s %d\x1b[0m.', '(PLAIN) Server listening on port', port);
-});
+    var peerserver = require('./src').ExpressPeerServer(server, options);
 
-peerserver.on('connection', function (id) {
-  console.log("connection: ", id);
-});
+    // Handle peer registration
+    app.use('/', peerserver);
+
+    // Start ws server
+    server.listen(options.port, () => {
+      console.log('\x1b[32m%s %d\x1b[0m.', '(PLAIN) Server listening on port', options.port);
+    });
+
+    peerserver.on('connection', function (id) {
+      console.log("CONNECTION: ", id);
+    });
+  }, error => { console.log('Unable to connect to External Services.', error); process.exit(1); });
+

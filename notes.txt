@@ -1,0 +1,8 @@
+0 - occuped
+1 - ready
+2 - waiting
+3 - responding
+4 - on call
+
+alter:
+- retirei possibilidade de discovery de peers.
