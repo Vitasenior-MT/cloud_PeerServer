@@ -3,7 +3,7 @@ require('dotenv').config();
 require('./src/models/index').sequelize.sync().then(
   () => {
     console.log('\x1b[32m(PLAIN) Connection established with External Services\x1b[0m.');
-    
+
     var app = require('express')();
     var server = require('http').createServer(app);
 
@@ -15,7 +15,6 @@ require('./src/models/index').sequelize.sync().then(
       proxied: false,
       path: "/",
       port: process.env.PORT || 8808,
-      debug: true,
       allow_discovery: false
     };
 
@@ -30,7 +29,7 @@ require('./src/models/index').sequelize.sync().then(
     });
 
     peerserver.on('connection', function (id) {
-      console.log("CONNECTION: ", id);
+      console.log("\x1b[36mnew connection: %s\x1b[0m", id);
     });
   }, error => { console.log('Unable to connect to External Services.', error); process.exit(1); });
 
