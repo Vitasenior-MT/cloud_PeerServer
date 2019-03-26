@@ -5,4 +5,4 @@
 4 - on call
 
 alter:
-- retirei possibilidade de discovery de peers.
+- peers discovery removed.
