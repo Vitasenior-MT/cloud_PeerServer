@@ -67,6 +67,7 @@ app._configureWS = function (socket, key, id, token, peers) {
     // res 'close' event will delete client.res for us
     client.socket = socket;
     client.peers = peers;
+    self._log("Allowed peers", peers);
     // Client already exists
     if (client.res) {
       client.res.end();

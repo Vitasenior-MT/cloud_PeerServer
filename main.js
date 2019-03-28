@@ -15,7 +15,8 @@ require('./src/models/index').sequelize.sync().then(
       proxied: false,
       path: "/",
       port: process.env.PORT || 8808,
-      allow_discovery: false
+      allow_discovery: false,
+      debug: true
     };
 
     var peerserver = require('./src').ExpressPeerServer(server, options);
