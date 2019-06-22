@@ -28,9 +28,9 @@ app._initializeWSS = function (server) {
       socket.close();
       return;
     }
-
+    //________________________________________________________________________
     utils.validateToken(token).then(
-      () => {
+      peers => {
         if (!self._clients[key] || !self._clients[key][id]) {
           self._checkKey(key, ip, function (err) {
             if (!err) {
@@ -39,34 +39,35 @@ app._initializeWSS = function (server) {
                 self._ips[ip]++;
                 socket.send(JSON.stringify({ type: "OPEN" }));
               }
-              self._configureWS(socket, key, id, token);
+              self._configureWS(socket, key, id, token, peers);
             } else {
               socket.send(JSON.stringify({ type: "ERROR", payload: { msg: err } }));
             }
           });
         } else {
-          self._configureWS(socket, key, id, token);
+          self._configureWS(socket, key, id, token, peers);
         }
-
       }).catch(err => {
-        console.log("2 ERROR", err);
-        socket.send(JSON.stringify({ type: "ERROR", payload: { msg: err.msg } }))
-      }
-      );
+        console.log(err);
+        self._log("INVALID TOKEN", err.msg);
+        socket.send(JSON.stringify({ type: "ERROR", payload: { msg: err.msg } }));
+      });
+    //________________________________________________________________________
   });
-
   this._wss.on("error", (err) => {
-    console.log("ERROR: ", err);
+    self._log("WS ERROR", err.message);
   })
 };
 
-app._configureWS = function (socket, key, id, token) {
+app._configureWS = function (socket, key, id, token, peers) {
   var self = this;
   var client = this._clients[key][id];
 
   if (token === client.token) {
     // res 'close' event will delete client.res for us
     client.socket = socket;
+    client.peers = peers;
+    self._log("Allowed peers", peers);
     // Client already exists
     if (client.res) {
       client.res.end();
@@ -94,13 +95,24 @@ app._configureWS = function (socket, key, id, token) {
   socket.on("message", function (data) {
     try {
       var message = JSON.parse(data);
-      if (
-        ["LEAVE", "CANDIDATE", "OFFER", "ANSWER"].indexOf(message.type) !== -1
-      ) {
-        //
-        // VERIFICAR o type de mensagem a iniciar a comunicação entre peers e validar o destino
-        console.log("message: ", message.type);
-        //
+      //________________________________________________________________________
+      if (["OFFER", "ANSWER"].indexOf(message.type) !== -1) {
+        if (peers.includes(message.dst)) {
+          self._handleTransmission(key, {
+            type: message.type,
+            src: id,
+            dst: message.dst,
+            payload: message.payload
+          });
+        } else {
+          self._handleTransmission(key, {
+            type: "EXPIRE",
+            src: id,
+            dst: message.dst
+          });
+        }
+        //________________________________________________________________________
+      } else if (["CANDIDATE", "LEAVE"].indexOf(message.type) !== -1) {
         self._handleTransmission(key, {
           type: message.type,
           src: id,
