@@ -16,6 +16,6 @@ USER node
 
 RUN npm run build
 
-EXPOSE 8082
+EXPOSE 9040
 
 CMD [ "npm", "run", "prod" ]

@@ -21,7 +21,7 @@ require('./src/models/index').sequelize.sync().then(
       concurrent_limit: 5000,
       proxied: false,
       path: "/",
-      port: process.env.PORT || 8082,
+      port: process.env.PORT || 9040,
       allow_discovery: false,
       debug: true
     };
