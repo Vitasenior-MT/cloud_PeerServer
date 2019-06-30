@@ -3,7 +3,7 @@
 // BASE SETUP
 // =============================================================================
 // Get the env variables from .env
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "docker") {
   require('dotenv').config();
 }
 
@@ -21,7 +21,7 @@ require('./src/models/index').sequelize.sync().then(
       concurrent_limit: 5000,
       proxied: false,
       path: "/",
-      port: process.env.PORT || 8808,
+      port: process.env.PORT || 8082,
       allow_discovery: false,
       debug: true
     };
