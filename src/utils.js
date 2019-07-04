@@ -9,7 +9,9 @@ exports.validateToken = (token) => {
       algorithms: ["RS256"]
     };
 
-    jwt.verify(token, process.env.PUBLIC_KEY, options, (error, payload) => {
+    let puKey="-----BEGIN PUBLIC KEY-----\n"+process.env.PUBLIC_KEY+"\n-----END PUBLIC KEY-----";
+
+    jwt.verify(token, puKey, options, (error, payload) => {
       if (error) reject("Invalid token provided");
       if (payload.role === "User") db.User.findOne({
         where: { id: payload.id },
