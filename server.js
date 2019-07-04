@@ -19,7 +19,7 @@ require('./src/models/index').sequelize.sync().then(
       key: "8dnMsRvmGdz3fPG8RYO8muaUfQ2Iy1lE",
       ip_limit: 5000,
       concurrent_limit: 5000,
-      proxied: false,
+      proxied: true,
       path: "/",
       port: process.env.PORT || 9040,
       allow_discovery: false,
